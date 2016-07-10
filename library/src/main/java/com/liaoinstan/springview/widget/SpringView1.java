@@ -3,7 +3,6 @@ package com.liaoinstan.springview.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
-import android.provider.Settings;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -22,7 +21,7 @@ import com.liaoinstan.springview.abs.PullViewHandle;
 /**
  * Created by liaoinstan on 2016/3/11.
  */
-public class SpringView extends ViewGroup implements PullViewHandle {
+public class SpringView1 extends ViewGroup implements PullViewHandle {
 
     private LayoutInflater inflater;
     private OverScroller mScroller;
@@ -83,7 +82,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
     private boolean refreshIng = false;
     private boolean loadIng = false;
 
-    public SpringView(Context context, AttributeSet attrs) {
+    public SpringView1(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflater = LayoutInflater.from(context);
 
@@ -501,13 +500,13 @@ public class SpringView extends ViewGroup implements PullViewHandle {
             } else {
                 if (!hasCallRefresh) {
                     hasCallRefresh = true;
-                    //callOnAfterRefreshAnim();
+                    callOnAfterRefreshAnim();
                 }
             }
         }
     }
 
-//    private int callFreshORload = 0;
+    private int callFreshORload = 0;
     private boolean isFullAnim;
     private boolean hasCallFull = false;
     private boolean hasCallRefresh = false;
@@ -563,9 +562,9 @@ public class SpringView extends ViewGroup implements PullViewHandle {
     }
 
     private void callOnAfterFullAnim() {
-//        if (callFreshORload != 0) {
-//            callOnFinishAnim();
-//        }
+        if (callFreshORload != 0) {
+            callOnFinishAnim();
+        }
         if (needChangeHeader) {
             needChangeHeader = false;
             setHeaderIn(_headerHander);
@@ -589,9 +588,24 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         }
     }
 
-    void loadmore() {
-        if (!isLoadIng() && listener != null) {
-            listener.onLoadmore();
+    private void callOnAfterRefreshAnim() {
+        if (type == Type.FOLLOW) {
+            if (isTop()) {
+//                refresh();
+            } else if (isBottom()) {
+                listener.onLoadmore();
+            }
+        } else if (type == Type.OVERLAP) {
+            if (!isMoveNow) {
+                long nowtime = System.currentTimeMillis();
+                if (nowtime - lastMoveTime >= MOVE_TIME_OVER) {
+                    if (callFreshORload == 1) {
+//                        refresh();
+                    } else if (callFreshORload == 2) {
+                        listener.onLoadmore();
+                    }
+                }
+            }
         }
     }
 
@@ -636,6 +650,22 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         //mRect.setEmpty();
     }
 
+    private void callOnFinishAnim() {
+        if (callFreshORload != 0) {
+            if (callFreshORload == 1) {
+//                if (headerHander != null) headerHander.onFinishAnim();
+                if (give == Give.BOTTOM || give == Give.NONE) {
+//                    refresh();
+                }
+            } else if (callFreshORload == 2) {
+                if (footerHander != null) footerHander.onFinishAnim();
+                if (give == Give.TOP || give == Give.NONE) {
+                    listener.onLoadmore();
+                }
+            }
+            callFreshORload = 0;
+        }
+    }
 
     /**
      * 重置控件位置到刷新状态（或加载状态）
@@ -656,7 +686,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        //callOnAfterRefreshAnim();
+                        callOnAfterRefreshAnim();
                     }
 
                     @Override
@@ -676,7 +706,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        //callOnAfterRefreshAnim();
+                        callOnAfterRefreshAnim();
                     }
 
                     @Override
@@ -715,7 +745,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-
+                    callFreshORload = 1;
                     needResetAnim = true;
                     refresh();
                 }
@@ -729,7 +759,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         } else if (type == Type.FOLLOW) {
             isFullAnim = false;
             hasCallRefresh = false;
-
+            callFreshORload = 1;
             needResetAnim = true;
             if (headerHander != null) headerHander.onStartAnim();
             mScroller.startScroll(0, getScrollY(), 0, -getScrollY() - HEADER_SPRING_HEIGHT, MOVE_TIME);
@@ -766,7 +796,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
 
     private void callFreshORload() {
         if (isTop()) {  //下拉
-
+            callFreshORload = 1;
             if (type == Type.OVERLAP) {
                 if (dsY > 200 || HEADER_LIMIT_HEIGHT >= HEADER_SPRING_HEIGHT) {
                     if (headerHander != null) {
@@ -781,19 +811,13 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                 }
             }
         } else if (isBottom()) {
-
+            callFreshORload = 2;
             if (type == Type.OVERLAP) {
                 if (dsY < -200 || FOOTER_LIMIT_HEIGHT >= FOOTER_SPRING_HEIGHT) {
-                    if (footerHander != null) {
-                        footerHander.onStartAnim();
-                        loadmore();
-                    }
+                    if (footerHander != null) footerHander.onStartAnim();
                 }
             } else if (type == Type.FOLLOW) {
-                if (footerHander != null) {
-                    footerHander.onStartAnim();
-                    loadmore();
-                }
+                if (footerHander != null) footerHander.onStartAnim();
             }
         }
     }

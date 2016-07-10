@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.liaoinstan.demospring.R;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
+import com.liaoinstan.springview.container.DefaultFooter;
+import com.liaoinstan.springview.container.DefaultHeader;
 import com.liaoinstan.springview.widget.SpringView;
 
 import java.util.ArrayList;
@@ -68,21 +70,32 @@ public class Demo3Activity extends AppCompatActivity{
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        addData();
                         springView.onFinishFreshAndLoad();
                     }
                 }, 1000);
             }
         });
-        springView.setHeader(new AliHeader(this,R.drawable.ali,true));   //参数为：logo图片资源，是否显示文字
-        springView.setFooter(new AliFooter(this,false));
+//        springView.setHeader(new AliHeader(this,R.drawable.ali,true));   //参数为：logo图片资源，是否显示文字
+//        springView.setFooter(new AliFooter(this,false));
+
+        springView.setHeader(new DefaultHeader(this));
+        springView.setFooter(new DefaultFooter(this));
+
+    }
+    private void addData(){
+        for (int i = 0; i < 9; i++) {
+            mDatas.add(i==0?"We are in RecyclerView":(i==1?"SpringView支持RecyclerView\n\n这是一个仿阿里旅行的header，logo可以图片可自行替换":""));
+        }
+        recyclerViewAdapter.notifyItemInserted(mDatas.size()-9);
     }
 
     private void initData(){
         for (int i = 0; i < 9; i++) {
             mDatas.add(i==0?"We are in RecyclerView":(i==1?"SpringView支持RecyclerView\n\n这是一个仿阿里旅行的header，logo可以图片可自行替换":""));
         }
-    }
 
+    }
     public void onClick(View v){
         switch (v.getId()){
             case R.id.add: {
@@ -119,7 +132,7 @@ public class Demo3Activity extends AppCompatActivity{
                 holder.text_item.setTextColor(Color.parseColor("#9dd2fc"));
             }
             else {
-                holder.text_item.setBackgroundColor(Color.parseColor("#ffffff"));
+                holder.text_item.setBackgroundColor(Color.parseColor("#ff0000"));
                 holder.text_item.setTextColor(Color.parseColor("#cccccc"));
             }
         }

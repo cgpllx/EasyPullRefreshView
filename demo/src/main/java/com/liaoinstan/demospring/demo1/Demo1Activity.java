@@ -32,7 +32,7 @@ public class Demo1Activity extends AppCompatActivity {
                         springView.onFinishFreshAndLoad();
 
                     }
-                }, 3000);
+                }, 30000);
             }
 
             @Override
