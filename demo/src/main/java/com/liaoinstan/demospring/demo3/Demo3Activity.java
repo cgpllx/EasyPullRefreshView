@@ -80,7 +80,7 @@ public class Demo3Activity extends AppCompatActivity{
 //        springView.setFooter(new AliFooter(this,false));
 
         springView.setHeader(new DefaultHeader(this));
-        springView.setFooter(new DefaultFooter(this));
+//        springView.setFooter(new DefaultFooter(this));
 
     }
     private void addData(){

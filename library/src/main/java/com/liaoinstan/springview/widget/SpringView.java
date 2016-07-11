@@ -206,9 +206,9 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
 //                contentView.clearAnimation();
-                if (!mScroller.isFinished()) {
+//                if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
-                }
+//                }
                 ;
 //                mScroller.abortAnimation();
                 hasCallFull = false;
@@ -216,12 +216,14 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                 mfirstY = event.getY();
                 boolean isTop = isChildScrollToTop();
                 boolean isBottom = isChildScrollToBottomFull(isFullEnable);
+
                 if (isTop || isBottom) isNeedMyMove = false;
                 break;
             case MotionEvent.ACTION_MOVE:
                 dsY += dy;
 //                isMoveNow = true;
                 isNeedMyMove = isNeedMyMove();
+                System.out.println("SpringView" + " isNeedMyMove="+isNeedMyMove);
 
                 if (isNeedMyMove && !isInControl) {
                     //把内部控件的事件转发给本控件处理
@@ -312,8 +314,10 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                 restSmartPosition();
                 dsY = 0;
                 dy = 0;
+                System.out.println("SpringView" + "ACTION_UP="+333);
                 break;
             case MotionEvent.ACTION_CANCEL:
+                System.out.println("SpringView" + "CANCEL="+22222);
                 break;
         }
         return true;
@@ -400,6 +404,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
             } else {
                 movedx = (int) ((float) ((MAX_FOOTER_PULL_HEIGHT - getScrollY()) / (float) MAX_FOOTER_PULL_HEIGHT) * dy / MOVE_PARA);
             }
+            System.out.println("SpringView" + "dy>0="+(dy > 0));
             scrollBy(0, (int) (-movedx));
         }
     }
@@ -518,13 +523,11 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         if (contentView == null) {
             return false;
         }
-        if (Math.abs(dy) < Math.abs(dx)) {
 
-
-            return false;
-        }
         boolean isTop = isChildScrollToTop();
         boolean isBottom = isChildScrollToBottomFull(isFullEnable);     //false不满一屏也算在底部，true不满一屏不算在底部
+        System.out.println("SpringView" + "isTop="+isTop);
+        System.out.println("SpringView" + "isBottom="+isTop);
         if (type == Type.OVERLAP) {
             if (header != null) {
                 if (isTop && dy > 0 || contentView.getTop() > 0 + 00) {
@@ -548,8 +551,8 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                 if (isTop && dy > 0 || getScrollY() < 0 - 00) {
                     return true;
                 }
-                //  System.out.println("SpringView getScrollY() ="+getScrollY());
-                // System.out.println("SpringView isTop ="+isTop);
+                  System.out.println("SpringView getScrollY() ="+getScrollY());
+                 System.out.println("SpringView isTop ="+isTop);
             }
             if (footer != null) {
                 if (isBottom && dy < 0 || getScrollY() > 0 + 00) {
@@ -557,6 +560,11 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                     return true;
                 }
             }
+        }
+        if (Math.abs(dy) < Math.abs(dx)) {
+
+            System.out.println("SpringView" + "Math.abs(dy) < Math.abs(dx))="+0000);
+            return false;
         }
         // System.out.println("SpringView isNeedMyMove  return false; ="+false);
         return false;
@@ -741,6 +749,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
      * 智能判断是重置控件位置到初始状态还是到刷新/加载状态
      */
     private void restSmartPosition() {
+        System.out.println("SpringView" + "restSmartPosition="+1111);
         if (listener == null) {
             resetPosition();
         } else {
@@ -825,65 +834,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
      * @return
      */
     private boolean isChildScrollToBottomFull(boolean isFull) {
-//        if (isFull){
-//            if (isChildScrollToTop()) {
-//                return false;
-//            }
-//        }
-//        if (contentView instanceof RecyclerView) {
-//            RecyclerView recyclerView = (RecyclerView) contentView;
-//            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-//            int count = recyclerView.getAdapter().getItemCount();
-//            if (layoutManager instanceof LinearLayoutManager && count > 0) {
-//                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-//                if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == count - 1) {
-//                    return true;
-//                }
-//            } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-//                StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-//                int[] lastItems = new int[2];
-//                staggeredGridLayoutManager.findLastCompletelyVisibleItemPositions(lastItems);
-//                int lastItem = Math.max(lastItems[0], lastItems[1]);
-//                if (lastItem == count - 1) {
-//                    return true;
-//                }
-//            }
-//            return false;
-//        } else if (contentView instanceof AbsListView) {
-//            final AbsListView absListView = (AbsListView) contentView;
-//            final Adapter adapter = absListView.getAdapter();
-//            if (null == adapter || adapter.isEmpty()) {
-//                return true;
-//            }
-//            final int lastItemPosition = adapter.getCount() - 1;
-//            final int lastVisiblePosition = absListView.getLastVisiblePosition();
-//            if (lastVisiblePosition >= lastItemPosition - 1) {
-//                final int childIndex = lastVisiblePosition - absListView.getFirstVisiblePosition();
-//                final int childCount = absListView.getChildCount();
-//                final int index = Math.max(childIndex, childCount - 1);
-//                final View lastVisibleChild = absListView.getChildAt(index);
-//                if (lastVisibleChild != null) {
-//                    return lastVisibleChild.getBottom() <= absListView.getBottom()-absListView.getTop();
-//                }
-//            }
-//            return false;
-//        } else if (contentView instanceof ScrollView) {
-//            ScrollView scrollView = (ScrollView) contentView;
-//            View view = scrollView.getChildAt(scrollView.getChildCount() - 1);
-//            if (view != null) {
-//                int diff = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
-//                if (diff == 0) {
-//                    return true;
-//                }
-//                if(!isFull) {
-//                    //如果scrollView中内容不满一屏，也算在底部
-//                    if (view.getMeasuredHeight() <= scrollView.getMeasuredHeight()) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
+
         return !ViewCompat.canScrollVertically(contentView, 1);
     }
 
