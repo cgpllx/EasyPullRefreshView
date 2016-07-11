@@ -3,7 +3,6 @@ package com.liaoinstan.springview.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
-import android.provider.Settings;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -528,13 +527,13 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         boolean isBottom = isChildScrollToBottomFull(isFullEnable);     //false不满一屏也算在底部，true不满一屏不算在底部
         if (type == Type.OVERLAP) {
             if (header != null) {
-                if (isTop && dy > 0 || contentView.getTop() > 0 + 20) {
+                if (isTop && dy > 0 || contentView.getTop() > 0 + 00) {
 
                     return true;
                 }
             }
             if (footer != null) {
-                if (isBottom && dy < 0 || contentView.getBottom() < mRect.bottom - 20) {
+                if (isBottom && dy < 0 || contentView.getBottom() < mRect.bottom - 00) {
 //                    if (isFullScrean()&&!isFullEnable)
 //                        return true;
 //                    else
@@ -553,7 +552,8 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                 // System.out.println("SpringView isTop ="+isTop);
             }
             if (footer != null) {
-                if (isBottom && dy < 0 || getScrollY() > 0 + 20) {
+                if (isBottom && dy < 0 || getScrollY() > 0 + 00) {
+//                    return false;
                     return true;
                 }
             }
