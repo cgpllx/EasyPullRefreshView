@@ -206,9 +206,9 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
 //                contentView.clearAnimation();
-//                if (!mScroller.isFinished()) {
+                if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
-//                }
+                }
                 ;
 //                mScroller.abortAnimation();
                 hasCallFull = false;
@@ -398,11 +398,11 @@ public class SpringView extends ViewGroup implements PullViewHandle {
             contentView.layout(contentView.getLeft(), top, contentView.getRight(), top + contentView.getMeasuredHeight());
         } else if (type == Type.FOLLOW) {
             //根据下拉高度计算位移距离，（越拉越慢）
-            int movedx;
+            int movedx=0;
             if (dy > 0) {
                 movedx = (int) ((float) ((MAX_HEADER_PULL_HEIGHT + getScrollY()) / (float) MAX_HEADER_PULL_HEIGHT) * dy / MOVE_PARA);
             } else {
-                movedx = (int) ((float) ((MAX_FOOTER_PULL_HEIGHT - getScrollY()) / (float) MAX_FOOTER_PULL_HEIGHT) * dy / MOVE_PARA);
+                movedx = (int) ((float) ((MAX_HEADER_PULL_HEIGHT + getScrollY()) / (float) MAX_HEADER_PULL_HEIGHT) * dy / MOVE_PARA);
             }
             System.out.println("SpringView" + "dy>0="+(dy > 0));
             scrollBy(0, (int) (-movedx));

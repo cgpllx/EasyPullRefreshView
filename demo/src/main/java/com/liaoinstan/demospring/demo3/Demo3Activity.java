@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.liaoinstan.demospring.R;
-import com.liaoinstan.springview.container.AliFooter;
-import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.container.DefaultFooter;
 import com.liaoinstan.springview.container.DefaultHeader;
 import com.liaoinstan.springview.widget.SpringView;
@@ -80,7 +78,7 @@ public class Demo3Activity extends AppCompatActivity{
 //        springView.setFooter(new AliFooter(this,false));
 
         springView.setHeader(new DefaultHeader(this));
-//        springView.setFooter(new DefaultFooter(this));
+        springView.setFooter(new DefaultFooter(this));
 
     }
     private void addData(){
