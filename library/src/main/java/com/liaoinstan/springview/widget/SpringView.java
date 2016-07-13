@@ -271,6 +271,7 @@ public class SpringView extends FrameLayout implements PullViewHandle {
 //                if (!mScroller.isFinished()) mScroller.abortAnimation();//不需要处理
                 break;
             case MotionEvent.ACTION_MOVE:
+                isNeedMyMove = isNeedMyMove();
                 if (isNeedMyMove) {
                     needResetAnim = false;      //按下的时候关闭回弹
                     //执行位移操作
@@ -407,15 +408,15 @@ public class SpringView extends FrameLayout implements PullViewHandle {
                 movedx = (int) ((float) ((MAX_HEADER_PULL_HEIGHT - getScrollY()) / (float) MAX_HEADER_PULL_HEIGHT) * dy / MOVE_PARA);
             }
 //            System.out.println("SpringView" + "dy>0=" + (dy > 0));
-            System.out.println("SpringView" + "getScrollY() =" + getScrollY());
-            System.out.println("SpringView" + "contentView getScrollY() =" + contentView.getScrollY());
-            System.out.println("SpringView" + "movedx =" + movedx);
+//            System.out.println("SpringView" + "getScrollY() =" + getScrollY());
+//            System.out.println("SpringView" + "contentView getScrollY() =" + contentView.getScrollY());
+//            System.out.println("SpringView" + "movedx =" + movedx);
 //            System.out.println("SpringView" + "contentView.getBottom() =" + contentView.getBottom());
 //            System.out.println("SpringView" + "contentView.getY() =" + contentView.getY());
 //            System.out.println("SpringView" + "contentView.getTop() =" + contentView.getTop());
 //            System.out.println("SpringView" + "contentView--getY() =" + getY());
             if (getScrollY() - movedx > 0) {
-                System.out.println("SpringView" + "11111 =" + 1111);
+//                System.out.println("SpringView" + "11111 =" + 1111);
                 scrollTo(0, 0);
                 contentView.scrollBy(0, getScrollY() - movedx);
                 return;
@@ -573,8 +574,8 @@ public class SpringView extends FrameLayout implements PullViewHandle {
                 if (isTop && dy > 0 || getScrollY() < 0 - 0) {
                     return true;
                 }
-//                System.out.println("SpringView getScrollY() =" + getScrollY());
-//                System.out.println("SpringView isTop =" + isTop);
+                System.out.println("SpringView getScrollY() =" + getScrollY());
+                System.out.println("SpringView isTop =" + isTop);
             }
             if (footer != null) {
                 if (isBottom && dy < 0 || getScrollY() > 0 + 00) {
