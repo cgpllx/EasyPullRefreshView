@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.OverScroller;
 
@@ -21,7 +22,7 @@ import com.liaoinstan.springview.abs.PullViewHandle;
 /**
  * Created by liaoinstan on 2016/3/11.
  */
-public class SpringView extends ViewGroup implements PullViewHandle {
+public class SpringView extends FrameLayout implements PullViewHandle {
 
     private LayoutInflater inflater;
     private OverScroller mScroller;
@@ -223,7 +224,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                 dsY += dy;
 //                isMoveNow = true;
                 isNeedMyMove = isNeedMyMove();
-                System.out.println("SpringView" + " isNeedMyMove="+isNeedMyMove);
+                System.out.println("SpringView" + " isNeedMyMove=" + isNeedMyMove);
 
                 if (isNeedMyMove && !isInControl) {
                     //把内部控件的事件转发给本控件处理
@@ -314,10 +315,10 @@ public class SpringView extends ViewGroup implements PullViewHandle {
                 restSmartPosition();
                 dsY = 0;
                 dy = 0;
-                System.out.println("SpringView" + "ACTION_UP="+333);
+//                System.out.println("SpringView" + "ACTION_UP=" + 333);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                System.out.println("SpringView" + "CANCEL="+22222);
+//                System.out.println("SpringView" + "CANCEL=" + 22222);
                 break;
         }
         return true;
@@ -398,14 +399,33 @@ public class SpringView extends ViewGroup implements PullViewHandle {
             contentView.layout(contentView.getLeft(), top, contentView.getRight(), top + contentView.getMeasuredHeight());
         } else if (type == Type.FOLLOW) {
             //根据下拉高度计算位移距离，（越拉越慢）
-            int movedx=0;
+            int movedx = 0;
             if (dy > 0) {
                 movedx = (int) ((float) ((MAX_HEADER_PULL_HEIGHT + getScrollY()) / (float) MAX_HEADER_PULL_HEIGHT) * dy / MOVE_PARA);
             } else {
-                movedx = (int) ((float) ((MAX_HEADER_PULL_HEIGHT + getScrollY()) / (float) MAX_HEADER_PULL_HEIGHT) * dy / MOVE_PARA);
+//                movedx= (int) dy;
+                movedx = (int) ((float) ((MAX_HEADER_PULL_HEIGHT - getScrollY()) / (float) MAX_HEADER_PULL_HEIGHT) * dy / MOVE_PARA);
             }
-            System.out.println("SpringView" + "dy>0="+(dy > 0));
-            scrollBy(0, (int) (-movedx));
+//            System.out.println("SpringView" + "dy>0=" + (dy > 0));
+            System.out.println("SpringView" + "getScrollY() =" + getScrollY());
+            System.out.println("SpringView" + "contentView getScrollY() =" + contentView.getScrollY());
+            System.out.println("SpringView" + "movedx =" + movedx);
+//            System.out.println("SpringView" + "contentView.getBottom() =" + contentView.getBottom());
+//            System.out.println("SpringView" + "contentView.getY() =" + contentView.getY());
+//            System.out.println("SpringView" + "contentView.getTop() =" + contentView.getTop());
+//            System.out.println("SpringView" + "contentView--getY() =" + getY());
+            if (getScrollY() - movedx > 0) {
+                System.out.println("SpringView" + "11111 =" + 1111);
+                scrollTo(0, 0);
+                contentView.scrollBy(0, getScrollY() - movedx);
+                return;
+            }
+//                scrollTo(0, getScrollY());
+//                movedx=movedx-getScrollY()-0;
+//                return;
+//            }
+            scrollBy(0, (-movedx));
+//            System.out.println("SpringView" + "getScaleY() =" + getScaleY());
         }
     }
 
@@ -511,7 +531,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         }
     }
 
-//    private int callFreshORload = 0;
+    //    private int callFreshORload = 0;
     private boolean isFullAnim;
     private boolean hasCallFull = false;
     private boolean hasCallRefresh = false;
@@ -526,8 +546,6 @@ public class SpringView extends ViewGroup implements PullViewHandle {
 
         boolean isTop = isChildScrollToTop();
         boolean isBottom = isChildScrollToBottomFull(isFullEnable);     //false不满一屏也算在底部，true不满一屏不算在底部
-        System.out.println("SpringView" + "isTop="+isTop);
-        System.out.println("SpringView" + "isBottom="+isTop);
         if (type == Type.OVERLAP) {
             if (header != null) {
                 if (isTop && dy > 0 || contentView.getTop() > 0 + 00) {
@@ -548,11 +566,15 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         } else if (type == Type.FOLLOW) {
             if (header != null) {
                 //其中的20是一个防止触摸误差的偏移量
-                if (isTop && dy > 0 || getScrollY() < 0 - 00) {
+//                System.out.println("SpringView getScaleY()> =" + getScaleY());
+//                if(getScaleY()>=00){
+//                    return false;
+//                }
+                if (isTop && dy > 0 || getScrollY() < 0 - 0) {
                     return true;
                 }
-                  System.out.println("SpringView getScrollY() ="+getScrollY());
-                 System.out.println("SpringView isTop ="+isTop);
+//                System.out.println("SpringView getScrollY() =" + getScrollY());
+//                System.out.println("SpringView isTop =" + isTop);
             }
             if (footer != null) {
                 if (isBottom && dy < 0 || getScrollY() > 0 + 00) {
@@ -563,7 +585,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
         }
         if (Math.abs(dy) < Math.abs(dx)) {
 
-            System.out.println("SpringView" + "Math.abs(dy) < Math.abs(dx))="+0000);
+//            System.out.println("SpringView" + "Math.abs(dy) < Math.abs(dx))=" + 0000);
             return false;
         }
         // System.out.println("SpringView isNeedMyMove  return false; ="+false);
@@ -592,7 +614,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
     void refresh() {
         if (!isRefreshIng()) {
             refreshIng = true;//标记正在刷新
-            System.out.println("SpringView refreshIng=" + refreshIng);
+//            System.out.println("SpringView refreshIng=" + refreshIng);
             listener.onRefresh();
         }
     }
@@ -749,7 +771,7 @@ public class SpringView extends ViewGroup implements PullViewHandle {
      * 智能判断是重置控件位置到初始状态还是到刷新/加载状态
      */
     private void restSmartPosition() {
-        System.out.println("SpringView" + "restSmartPosition="+1111);
+//        System.out.println("SpringView" + "restSmartPosition=" + 1111);
         if (listener == null) {
             resetPosition();
         } else {
